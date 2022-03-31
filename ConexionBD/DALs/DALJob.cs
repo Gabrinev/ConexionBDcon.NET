@@ -24,12 +24,22 @@ namespace ConexionBD.CLASES
             try
             {
                 cnx.OpenConection();
-                
-                string sql = @"
-                INSERT INTO jobs 
-                VALUES('" + job.workstation + "', " + job.minSalary + ", " + job.maxSalary + ")";
+
+                string sql = @"INSERT INTO jobs (job_title, min_salary, max_salary)
+                VALUES(@puesto, @min, @max)";
+
+
 
                 SqlCommand cmd = new SqlCommand(sql, cnx.conexion);
+                                
+                SqlParameter min = new SqlParameter("@min", job.minSalary);
+                SqlParameter max = new SqlParameter("@max", job.maxSalary);
+
+                SqlParameter puesto = new SqlParameter("@puesto", System.Data.SqlDbType.NVarChar, 50);
+                puesto.Value = job.workstation;
+                cmd.Parameters.Add(puesto);
+                cmd.Parameters.Add(min);
+                cmd.Parameters.Add(max);
                 cmd.ExecuteNonQuery();
                 MessageBox.Show("Insertado correctamente");
                 cnx.CloseConnection();
@@ -79,11 +89,13 @@ namespace ConexionBD.CLASES
                 string sql = @"
                 DELETE
                 FROM jobs
-                WHERE job_id = " + job;
+                WHERE job_id = @id";
 
                 
 
                 SqlCommand cmd = new SqlCommand(sql, cnx.conexion);
+                SqlParameter min = new SqlParameter("@id", Convert.ToInt32(job));
+                cmd.Parameters.Add(min);
                 cmd.ExecuteNonQuery();
                 cnx.CloseConnection();
             }
