@@ -28,8 +28,6 @@ namespace ConexionBD.CLASES
                 string sql = @"INSERT INTO jobs (job_title, min_salary, max_salary)
                 VALUES(@puesto, @min, @max)";
 
-
-
                 SqlCommand cmd = new SqlCommand(sql, cnx.conexion);
                                 
                 SqlParameter min = new SqlParameter("@min", job.minSalary);
@@ -103,6 +101,40 @@ namespace ConexionBD.CLASES
             {
 
                 MessageBox.Show("No se ha podido ejecutar el select " + ee);
+            }
+        }
+
+        public void UpdateJob(Job job)
+        {
+            try
+            {
+                cnx.OpenConection();
+
+                string sql = @"UPDATE jobs
+                                SET job_title = '@puesto', min_salary = @min, max_salary = @max
+                                WHERE  job_id = @id";
+
+                SqlCommand cmd = new SqlCommand(sql, cnx.conexion);
+
+                SqlParameter min = new SqlParameter("@min", job.minSalary);
+                SqlParameter max = new SqlParameter("@max", job.maxSalary);
+                SqlParameter id = new SqlParameter("@id", job.id);
+
+                SqlParameter puesto = new SqlParameter("@puesto", System.Data.SqlDbType.NVarChar, 50);
+                puesto.Value = job.workstation;
+                cmd.Parameters.Add(puesto);
+                cmd.Parameters.Add(min);
+                cmd.Parameters.Add(max);
+                cmd.Parameters.Add(id);
+                cmd.ExecuteNonQuery();
+                MessageBox.Show("Actualizado correctamente");
+                cnx.CloseConnection();
+
+            }
+            catch (Exception ee)
+            {
+
+                MessageBox.Show("No se ha podido actualizar " + ee);
             }
         }
 
